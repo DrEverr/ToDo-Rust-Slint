@@ -67,6 +67,18 @@ export component AppWindow inherits Window {
                 }
             }
         }
+        HorizontalBox {
+            alignment: space-between;
+            Text {
+                text: "ID";
+            }
+            Text {
+                text: "Text";
+            }
+            Text {
+                text: "Done";
+            }
+        }
         ListView {
             height: 200px;
             for todo[i] in todos: TodoTile {
