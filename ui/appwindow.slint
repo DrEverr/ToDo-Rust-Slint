@@ -1,0 +1,78 @@
+import { Button, VerticalBox, HorizontalBox, CheckBox, ListView } from "std-widgets.slint";
+
+struct ToDo {
+    text: string,
+    done: bool,
+}
+
+component TodoTile inherits Rectangle {
+    callback toggle-done();
+
+    in property<int> id;
+    in property<string> text;
+    in property<bool> done;
+
+    HorizontalBox {
+        Text {
+            text: "#\{root.id}";
+        }
+        Text {
+            text: root.text;
+        }
+        CheckBox {
+            checked: done;
+            toggled => {
+                root.toggle-done();
+            }
+        }
+    }
+}
+
+export component AppWindow inherits Window {
+    width: 300px;
+    height: 500px;
+    forward-focus: input;
+
+    in-out property<[ToDo]> todos: [];
+    callback add-todo(string);
+    callback delete-done-todos();
+
+    VerticalBox {
+        alignment: start;
+        HorizontalBox {
+            alignment: space-between;
+            Text {
+                text: "ToDo: \{root.todos.length}";
+            }
+            Button {
+                text: "Delete Done";
+                clicked => {
+                    root.delete-done-todos();
+                }
+            }
+        }
+        HorizontalBox {
+            input := TextInput {
+                width: root.width - 100px;
+            }
+            Button {
+                text: "Add";
+                clicked => {
+                    root.add-todo(input.text);
+                    input.text = "";
+                }
+            }
+        }
+        ListView {
+            height: 200px;
+            for todo[i] in todos: TodoTile {
+                id: i;
+                text: todo.text;
+                done: todo.done;
+                toggle-done => {
+                    todo.done = !todo.done;
+                }
+            }
+        }
+    }
+}
