@@ -7,17 +7,21 @@ struct ToDo {
 
 component TodoTile inherits Rectangle {
     callback toggle-done();
+    callback text-changed(string);
 
     in property<int> id;
-    in property<string> text;
+    in-out property<string> text;
     in property<bool> done;
 
     HorizontalBox {
         Text {
             text: "#\{root.id}";
         }
-        Text {
+        TextInput {
             text: root.text;
+            edited => {
+                root.text-changed(self.text);
+            }
         }
         CheckBox {
             checked: done;
@@ -71,6 +75,9 @@ export component AppWindow inherits Window {
                 done: todo.done;
                 toggle-done => {
                     todo.done = !todo.done;
+                }
+                text-changed(text) => {
+                    todo.text = text;
                 }
             }
         }
